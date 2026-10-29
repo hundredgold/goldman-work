@@ -160,6 +160,20 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
 .dok{color:#7da274}
 .dmeta{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.8}
 .dhead{font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.08em;margin:10px 0 4px}
+/* чат-демо */
+.chat-body{height:360px;overflow-y:auto;padding:18px;display:flex;flex-direction:column;gap:12px;background:var(--panel)}
+.msg{max-width:78%;padding:10px 14px;border-radius:14px;font-size:14px;line-height:1.55;font-family:var(--sans)}
+.msg.bot{align-self:flex-start;background:#1d1e1c;color:var(--cream);border:1px solid var(--border)}
+.msg.user{align-self:flex-end;background:rgba(227,185,61,.12);color:var(--cream);border:1px solid rgba(227,185,61,.25)}
+.msg .who{display:block;font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--dim);margin-bottom:4px}
+.msg.bot .who{color:var(--accent)}
+.typing{align-self:flex-start;color:var(--dim);font-size:13px;font-family:var(--mono)}
+.chat-input-row{display:flex;gap:10px;padding:14px;border-top:1px solid var(--border)}
+.chat-input{flex:1;background:var(--panel2);border:1px solid var(--border);border-radius:999px;color:var(--cream);font-family:var(--sans);font-size:14px;padding:11px 18px;outline:none}
+.chat-input:focus{border-color:var(--border2)}
+.chat-send{padding:11px 20px}
+.chat-h{font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.2;margin-bottom:16px}
+.chat-p{color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:14px}
 </style>
 </head>
 <body>
@@ -290,10 +304,36 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
   </div>
 </section>
 
-<section id="examples" style="padding-top:0">
+<section id="botdemo" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="num">/04</span>
+      <h2>Демо ИИ-администратора</h2>
+      <span class="note up">напишите, как написал бы ваш клиент</span>
+    </div>
+    <div class="steps-grid reveal">
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span>клиника «ДемоДент» · ИИ-администратор</span></div>
+        <div class="chat-body" id="chatBody"></div>
+        <div class="chat-input-row">
+          <input id="chatInput" class="chat-input" type="text" placeholder="Напишите вопрос клиента…" maxlength="200">
+          <button class="btn fill chat-send" id="chatSend" type="button"><span class="lbl">→</span></button>
+        </div>
+      </div>
+      <div>
+        <h3 class="chat-h">Клиент пишет в 23:47.<br>Кто отвечает?</h3>
+        <p class="chat-p">ИИ-администратор отвечает за 5 секунд в Telegram, WhatsApp и на сайте: снимает типовые вопросы, записывает, напоминает. Живой администратор утром видит готовые записи — а не разбор ночных сообщений.</p>
+        <p class="chat-p">Попробуйте: спросите про цены, анестезию, ДМС, рассрочку — или напишите «хочу записаться». Сложный вопрос бот честно передаст живому человеку — так и в бою: <b style="color:var(--cream)">человек в контуре</b>.</p>
+        <p class="up" style="color:var(--dim);margin-top:18px;line-height:1.8">демо на правилах · в боевой версии — ваше расписание, ваш прайс, ваша CRM</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="examples" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="num">/05</span>
       <h2>Примеры работы</h2>
       <span class="note up">живые отчёты — открой и потрогай</span>
     </div>
@@ -323,7 +363,7 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
 <section id="pricing" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">/05</span>
+      <span class="num">/06</span>
       <h2>Цены</h2>
       <span class="note up">фиксируем до старта — без «дополнительно по договорённости»</span>
     </div>
@@ -555,6 +595,75 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
     var p = parsePositions(text), o = parseOrder(text);
     return { positions: p, order: o, warnings: missing(p, o) };
   };
+})();
+
+// ---------------- живое демо: ИИ-администратор ----------------
+(function(){
+  var FAQ = [
+    { keys: ["больно", "болит", "страшно", "боюсь", "анестез", "укол", "шприц"],
+      a: "Понимаю переживания — это нормально 🙂 Мы работаем только с современной анестезией: перед уколом врач наносит обезболивающий гель, вы почти ничего не чувствуете. Приходите сначала на бесплатную консультацию — просто осмотр и разговор, без лечения." },
+    { keys: ["дмс", "страхов", "полис"],
+      a: "Да, работаем с ДМС. Перечень услуг зависит от вашей страховой — напишите её название, администратор проверит по базе и подтвердит при записи." },
+    { keys: ["ребен", "ребён", "дет", "малыш"],
+      a: "Конечно! У нас ведут детских стоматологов: лечение молочных зубов, герметизация фиссур, профилактика. Первый визит обычно — просто знакомство с кабинетом, в игровой форме." },
+    { keys: ["рассроч", "кредит", "картой", "оплат"],
+      a: "Есть рассрочка 0% на лечение от 20 000 ₽ — оформляется за 10 минут прямо в клинике. Принимаем карты и безналичную оплату." },
+    { keys: ["адрес", "где вы", "как добраться", "метро", "парковк"],
+      a: "Мы находимся: г. Москва, ул. Примерная, д. 10, 1 этаж. 5 минут от метро, есть парковка во дворе. График: Пн–Сб 9:00–21:00, Вс 10:00–18:00." },
+    { keys: ["график", "работаете", "время работы", "часы", "выходн"],
+      a: "Работаем: Пн–Сб 9:00–21:00, Вс 10:00–18:00. Записаться можно прямо здесь — я подберу удобное время." },
+    { keys: ["цен", "стоит", "стоимость", "сколько"],
+      a: "Основной прайс:\n• Консультация и осмотр — бесплатно\n• Чистка зубов (Air Flow) — 6 500 ₽\n• Лечение кариеса — от 4 900 ₽\n• Удаление зуба — от 3 500 ₽\n• Имплантация — от 35 000 ₽\n\nТочный план врач составит после осмотра — консультация бесплатная. Записать вас?" },
+    { keys: ["врач", "доктор", "специалист", "опыт", "стаж"],
+      a: "В клинике 6 врачей, средний стаж — 12 лет, у каждого своя специализация: имплантология, ортодонтия, детская стоматология. Напишите, что беспокоит, — подберу подходящего специалиста." },
+    { keys: ["запис", "прием", "приём", "хочу к вам", "поставить"],
+      a: "С удовольствием помогу! Скажите, какая услуга интересует и в какой день удобно, — забронирую время и напомню о визите за день." }
+  ];
+  var FALLBACK = "Хороший вопрос — на него точно ответит врач. Я передал его администратору: она перезвонит в течение 15 минут в рабочее время. А ещё можно записаться на бесплатную консультацию — спросите меня про запись.";
+  var body = document.getElementById("chatBody"),
+      input = document.getElementById("chatInput");
+
+  function addMsg(text, who){
+    var d = document.createElement("div");
+    d.className = "msg " + who;
+    var w = document.createElement("span");
+    w.className = "who";
+    w.textContent = who === "bot" ? "ИИ-АДМИНИСТРАТОР" : "КЛИЕНТ";
+    d.appendChild(w);
+    d.appendChild(document.createTextNode(text));
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+  }
+  function answer(q){
+    var low = q.toLowerCase(), res = null;
+    for (var i = 0; i < FAQ.length; i++) {
+      for (var k = 0; k < FAQ[i].keys.length; k++) {
+        if (low.indexOf(FAQ[i].keys[k]) >= 0) { res = FAQ[i].a; break; }
+      }
+      if (res) break;
+    }
+    return res || FALLBACK;
+  }
+  function send(){
+    var q = input.value.trim();
+    if (!q) return;
+    input.value = "";
+    addMsg(q, "user");
+    var t = document.createElement("div");
+    t.className = "typing";
+    t.textContent = "ИИ печатает…";
+    body.appendChild(t);
+    body.scrollTop = body.scrollHeight;
+    setTimeout(function(){
+      t.remove();
+      addMsg(answer(q), "bot");
+    }, 600);
+  }
+  document.getElementById("chatSend").addEventListener("click", send);
+  input.addEventListener("keydown", function(e){ if (e.key === "Enter") send(); });
+
+  addMsg("Здравствуйте! Это ИИ-администратор клиники «ДемоДент». Я на связи 24/7: отвечаю на вопросы и записываю на приём. Чем помочь? 🙂", "bot");
+  window.chatDemo = answer;
 })();
 </script>
 
