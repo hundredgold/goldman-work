@@ -148,6 +148,18 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
 .reveal{opacity:0;transform:translateY(22px);transition:opacity .7s ease,transform .7s ease}
 .reveal.vis{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}html{scroll-behavior:auto}}
+
+/* живое демо */
+.demo-ta{width:100%;min-height:280px;background:var(--panel);border:1px solid var(--border);border-radius:14px;color:var(--cream);font-family:var(--mono);font-size:13px;line-height:1.7;padding:18px;resize:vertical;outline:none}
+.demo-ta:focus{border-color:var(--border2)}
+.demo-table{width:100%;border-collapse:collapse;font-size:13px;margin:4px 0 14px}
+.demo-table th{text-align:left;color:var(--dim);font-weight:400;padding:5px 8px;border-bottom:1px solid var(--border);font-family:var(--mono);font-size:11px;letter-spacing:.08em}
+.demo-table td{padding:7px 8px;border-bottom:1px solid var(--border);color:var(--cream);font-family:var(--mono);font-size:12.5px;vertical-align:top}
+.demo-table td.weak{color:var(--muted)}
+.dwarn{color:var(--accent)}
+.dok{color:#7da274}
+.dmeta{margin-top:14px;color:var(--muted);font-size:13px;line-height:1.8}
+.dhead{font-family:var(--mono);font-size:12px;color:var(--dim);letter-spacing:.08em;margin:10px 0 4px}
 </style>
 </head>
 <body>
@@ -158,6 +170,7 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
     <div class="nav-links">
       <a href="#services">УСЛУГИ</a>
       <a href="#how">КАК РАБОТАЕМ</a>
+      <a href="#demo">ДЕМО</a>
       <a href="#examples">ПРИМЕРЫ</a>
       <a href="#pricing">ЦЕНЫ</a>
       <a href="#contact">КОНТАКТЫ</a>
@@ -253,10 +266,34 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
   </div>
 </section>
 
-<section id="examples" style="padding-top:0">
+<section id="demo" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="num">/03</span>
+      <h2>Живое демо</h2>
+      <span class="note up">вставь письмо — увидишь таблицу · всё считается в твоём браузере</span>
+    </div>
+    <div class="steps-grid reveal">
+      <div>
+        <textarea id="demoInput" class="demo-ta" spellcheck="false"></textarea>
+        <div style="display:flex;gap:14px;align-items:center;margin-top:16px;flex-wrap:wrap">
+          <button class="btn fill" id="demoBtn" type="button"><span class="lbl">Обработать письмо <span class="arr">→</span></span></button>
+          <span class="up" style="color:var(--dim)">данные никуда не уходят</span>
+        </div>
+        <p class="up" style="color:var(--dim);margin-top:18px;line-height:1.8">это демо на правилах — как и первый пилот. в боевой версии подключается ваш поток писем, CRM и справочник артикулов</p>
+      </div>
+      <div class="term">
+        <div class="term-bar"><i></i><i></i><i></i><span>goldman.work — живой разбор заявки</span></div>
+        <div class="term-body" id="demoOut" style="min-height:330px"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="examples" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="num">/04</span>
       <h2>Примеры работы</h2>
       <span class="note up">живые отчёты — открой и потрогай</span>
     </div>
@@ -286,7 +323,7 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
 <section id="pricing" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">/04</span>
+      <span class="num">/05</span>
       <h2>Цены</h2>
       <span class="note up">фиксируем до старта — без «дополнительно по договорённости»</span>
     </div>
@@ -352,6 +389,174 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
     <span>ИИ-автоматизация · пилоты с гарантией</span>
   </div>
 </footer>
+
+<script>
+// ---------------- живое демо: разбор письма в браузере ----------------
+(function(){
+  var SAMPLE = "Тема: Заказ на март — кухни Гамма\n\nДобрый день!\n\nОтправляем заявку на поставку:\n1. Кухня Гамма, цвет дуб сонома — 8 шт, арт. KG-120\n2. Кухня Гамма, цвет венге — 6 шт, арт. KG-120\n3. Кухня Модерн, белые фасады — 4 шт, арт. KM-210\n\nСрок: к 15 марта. Доставка в город Подольск.\nВопросы по комплектации фурнитурой уточню отдельно.\n\nМенеджер закупок, Ольга\n+7 (916) 345-12-78";
+
+  var STEMS = ["кухн","гарнитур","шкаф","купе","комод","стол","стул","кресл","кроват","тумб","прихож","диван","матрас","фасад","столешниц","пенал","сервант","витрин"];
+  var RE_MODEL1 = /(?:модель|серия)\s*[:№]?\s*([A-ZА-ЯЁ0-9][0-9A-Za-zА-Яа-яЁё\- ]{1,30}?)(?=[,.;—–\n]|$)/;
+  var RE_MODEL2 = /«([^»]{2,40})»/;
+  var RE_MODEL3 = /(^|[^0-9A-Za-zА-Яа-яЁё\-])(кухня|шкаф-купе|шкаф|купе|комод|стол|стул|кресло|кровать|тумба|диван|гарнитур)\s+([А-ЯЁA-Z][0-9A-Za-zА-Яа-яЁё]*(?:-\d+)?)/i;
+  var RE_UNIT = /(?:^|[^\wа-яё\-])(\d{1,4})\s*(шт|штук|компл|пог\.?\s?м|м2|м²)/i;
+  var RE_BARE = /(?:^|[^\w\-.])(\d{1,4})(?![\w\-%])/g;
+  var RE_ART = /(?:арт\.?|артикул)\s*[:№]?\s*([0-9A-Za-zА-Яа-яЁё\-\/]{2,})/i;
+  var RE_BULLET = /^\s*(?:\d{1,2}[.)]\s*|[-–—•*]\s*)/;
+  var MONTHS = "(январ|феврал|март|апрел|ма[йяе]|июн|июл|август|сентябр|октябр|ноябр|декабр)";
+  var RE_DEADLINE1 = new RegExp("(?:к|до)\\s?(\\d{1,2})\\s?(?:числа?\\s?)?" + MONTHS + "[а-яё]*", "i");
+  var RE_DEADLINE2 = new RegExp("(?:к|до)\\s?" + MONTHS + "[а-яё]*", "i");
+  var RE_DEADLINE3 = /(?:к|до)\s?\d{1,2}\s?(?:числа|числ\.)/i;
+  var RE_DEADLINE4 = /(?:^|[^\w\-.])(\d{1,2}[./]\d{1,2}(?:[./]\d{2,4})?)(?![\w\-.])/;
+  var RE_DEADLINE5 = /в\s+течение\s+\d+\s+(?:дн|недел|нед)/i;
+  var RE_PHONE = /(?:\+7|8)[\s(\-]{0,2}\d{3}[)\s\-]{0,2}\d{3}[\s\-]?\d{2}[\s\-]?\d{2}/g;
+  var RE_CITY1 = /(?:г\.|город)\s*([А-ЯЁ][а-яё\-]{2,})/;
+  var RE_CITY2 = /(?:доставк\w*|отгрузк\w*)\s*(?:в|по)\s+([А-ЯЁ][а-яё\-]{2,})/;
+  var RE_COLOR_STRONG = /(венг|дуб|орех|зеркал|графит|капучино|шимо|сонома|вяз|ясен|бук)[а-яё]*/i;
+  var RE_COLOR_WEAK = /(бел|черн|чёрн|сер|бежев|красн|син|зелён|зелен)[а-яё]*/i;
+
+  function hasFurn(s){
+    var low = s.toLowerCase();
+    for (var i = 0; i < STEMS.length; i++) if (low.indexOf(STEMS[i]) >= 0) return true;
+    return false;
+  }
+  function findModel(s){
+    var m = RE_MODEL1.exec(s); if (m) return m[1].trim();
+    m = RE_MODEL2.exec(s); if (m) return m[1].trim();
+    m = RE_MODEL3.exec(s); if (m) return (m[2] + " " + m[3]).trim();
+    return "";
+  }
+  function qtyNumbers(s){
+    var out = [], m, re = new RegExp(RE_UNIT.source, "gi");
+    while ((m = re.exec(s))) out.push(m[1]);
+    re = new RegExp(RE_BARE.source, "g");
+    while ((m = re.exec(s))) out.push(m[1]);
+    return out.filter(function(v, i, a){ return a.indexOf(v) === i; });
+  }
+  function findQty(s){
+    var m = RE_UNIT.exec(s);
+    if (m) return { qty: m[1] + " " + m[2].toLowerCase().replace("штук", "шт"), num: parseInt(m[1], 10) };
+    if (hasFurn(s)) {
+      var nums = qtyNumbers(s);
+      if (nums.length === 1) return { qty: nums[0], num: parseInt(nums[0], 10) };
+    }
+    return { qty: "", num: null };
+  }
+  function findColors(s){
+    var found = [], m;
+    [RE_COLOR_STRONG, RE_COLOR_WEAK].forEach(function(rx){
+      var re = new RegExp(rx.source, "gi");
+      while ((m = re.exec(s))) {
+        var v = m[0].toLowerCase();
+        if (found.indexOf(v) < 0 && found.length < 3) found.push(v);
+      }
+    });
+    return found.join(", ");
+  }
+  function looksLikePosition(s){
+    if (!(hasFurn(s) || RE_MODEL1.test(s) || RE_MODEL2.test(s))) return false;
+    return !!(findModel(s) || findQty(s).num !== null || RE_ART.test(s));
+  }
+  function parsePositions(text){
+    var out = [], seen = {}, lines = text.split("\n");
+    lines.forEach(function(raw){
+      var line = raw.replace(RE_BULLET, "").trim();
+      if (line.length < 3) return;
+      if (!(hasFurn(line) || RE_MODEL1.test(line) || RE_MODEL2.test(line))) return;
+      var parts = null;
+      if (qtyNumbers(line).length > 1 && /[,;]/.test(line)) {
+        var subs = line.split(/[,;]/).map(function(p){ return p.trim(); }).filter(Boolean);
+        if (subs.filter(looksLikePosition).length >= 2) parts = subs.filter(looksLikePosition);
+      }
+      var build = function(seg){
+        var q = findQty(seg), am = RE_ART.exec(line), mm = findModel(seg) || findModel(line);
+        var key = (mm.toLowerCase()) + "|" + (findColors(seg).toLowerCase()) + "|" + q.num;
+        if (seen[key]) return;
+        seen[key] = 1;
+        out.push({ model: mm, art: am ? am[1] : "", qty: q.qty, num: q.num,
+                   color: findColors(seg) || findColors(line), note: seg.slice(0, 90) });
+      };
+      if (parts) parts.forEach(build);
+      else if (looksLikePosition(line)) build(line);
+    });
+    return out;
+  }
+  function parseOrder(text){
+    var deadline = "", m;
+    [RE_DEADLINE1, RE_DEADLINE2, RE_DEADLINE3, RE_DEADLINE4, RE_DEADLINE5].some(function(rx){
+      m = rx.exec(text);
+      if (m) { deadline = m[0].trim(); return true; }
+      return false;
+    });
+    var city = "";
+    [RE_CITY1, RE_CITY2].some(function(rx){
+      m = rx.exec(text);
+      if (m) { city = m[1]; return true; }
+      return false;
+    });
+    var phones = [], pm;
+    var pre = new RegExp(RE_PHONE.source, "g");
+    while ((pm = pre.exec(text))) if (phones.indexOf(pm[0]) < 0) phones.push(pm[0]);
+    return { deadline: deadline, city: city, phones: phones.slice(0, 2) };
+  }
+  function missing(p, o){
+    var w = [];
+    p.forEach(function(x, i){
+      var t = x.model || (x.note.slice(0, 30) + "…");
+      if (x.num === null) w.push("Позиция " + (i + 1) + " (" + t + "): не указано количество");
+      if (!x.color) w.push("Позиция " + (i + 1) + " (" + t + "): не указан цвет/материал");
+      if (!x.model) w.push("Позиция " + (i + 1) + ": модель не распознана — проверить вручную");
+    });
+    if (!o.deadline) w.push("Не указан срок поставки");
+    if (!o.phones.length) w.push("В письме нет контактного телефона");
+    return w;
+  }
+  function esc(s){
+    var d = document.createElement("div"); d.textContent = s; return d.innerHTML;
+  }
+  function render(text){
+    var out = document.getElementById("demoOut");
+    if (text.trim().length < 10) {
+      out.innerHTML = "<span class='dwarn'>Вставьте текст письма — хотя бы пару строк.</span>";
+      return;
+    }
+    var pos = parsePositions(text), o = parseOrder(text), w = missing(pos, o);
+    var html = "<div class='dhead'>ИЗВЛЕЧЁННЫЕ ПОЗИЦИИ</div>";
+    if (!pos.length) {
+      html += "<div class='dwarn'>Позиции не распознаны. В демо работают письма с мебельной номенклатурой — в боевой версии словарь подстраивается под вашу номенклатуру.</div>";
+    } else {
+      html += "<table class='demo-table'><tr><th>№</th><th>МОДЕЛЬ</th><th>АРТ.</th><th>КОЛ-ВО</th><th>ЦВЕТ</th></tr>";
+      pos.forEach(function(p, i){
+        html += "<tr><td>" + (i + 1) + "</td><td>" + (p.model ? esc(p.model) : "<span class='dwarn'>не распознана</span>") +
+                "</td><td class='weak'>" + (p.art ? esc(p.art) : "—") +
+                "</td><td>" + (p.qty ? esc(p.qty) : "<span class='dwarn'>кол-во?</span>") +
+                "</td><td>" + (p.color ? esc(p.color) : "<span class='dwarn'>цвет?</span>") + "</td></tr>";
+      });
+      html += "</table>";
+    }
+    html += "<div class='dhead'>ЧТО УТОЧНИТЬ МЕНЕДЖЕРУ</div>";
+    if (w.length) {
+      html += w.map(function(x){ return "<div class='dwarn'>⚠ " + esc(x) + "</div>"; }).join("");
+    } else {
+      html += "<div class='dok'>✓ Все данные на месте — заявка готова для менеджера</div>";
+    }
+    html += "<div class='dmeta'>Срок: " + (o.deadline ? esc(o.deadline) : "—") +
+            " · Город: " + (o.city ? esc(o.city) : "—") +
+            " · Тел: " + (o.phones.length ? esc(o.phones.join(", ")) : "—") + "</div>";
+    out.innerHTML = html;
+  }
+
+  document.getElementById("demoInput").value = SAMPLE;
+  document.getElementById("demoBtn").addEventListener("click", function(){
+    render(document.getElementById("demoInput").value);
+  });
+  render(SAMPLE);
+  window.demoParse = function(text){
+    var p = parsePositions(text), o = parseOrder(text);
+    return { positions: p, order: o, warnings: missing(p, o) };
+  };
+})();
+</script>
 
 <script>
 // ASCII-полоса из рублей и слэшей
