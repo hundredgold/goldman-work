@@ -13,6 +13,7 @@
   --bg:#0d0d0c; --panel:#141413; --panel2:#191917;
   --cream:#efece3; --muted:#8f8c82; --dim:#5c5a53;
   --accent:#e3b93d; --border:#262624; --border2:#33332f;
+  --max:#4a86ff; --max-soft:rgba(74,134,255,.12); --max-line:rgba(74,134,255,.28);
   --serif:'Source Serif 4',Georgia,serif;
   --mono:'JetBrains Mono',Consolas,monospace;
   --sans:'Inter',Arial,sans-serif;
@@ -68,7 +69,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(13,13,12,.93)
 .money-band pre span{color:#4a483f}
 
 /* ---------- sections ---------- */
-section{padding:96px 0}
+section{padding:96px 0;scroll-margin-top:80px}
 .sec-head{display:flex;align-items:baseline;gap:20px;margin-bottom:56px;flex-wrap:wrap}
 .sec-head .num{font-family:var(--mono);font-size:12px;color:var(--accent);letter-spacing:.14em}
 .sec-head h2{font-family:var(--serif);font-weight:300;font-size:clamp(30px,4vw,48px);line-height:1.1}
@@ -174,15 +175,67 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
 .chat-send{padding:11px 20px}
 .chat-h{font-family:var(--serif);font-weight:400;font-size:30px;line-height:1.2;margin-bottom:16px}
 .chat-p{color:var(--muted);font-size:15px;line-height:1.7;margin-bottom:14px}
+
+/* ---------- scroll progress ---------- */
+.sbar{position:fixed;top:0;left:0;height:2px;width:0;z-index:60;background:linear-gradient(90deg,var(--accent),#f4d06a);box-shadow:0 0 12px rgba(227,185,61,.5);transition:width .08s linear}
+
+/* ---------- hero depth ---------- */
+.hero::before{content:"";position:absolute;top:-120px;left:50%;transform:translateX(-50%);width:min(960px,92vw);height:620px;background:radial-gradient(ellipse 55% 60% at 50% 40%,rgba(227,185,61,.10),transparent 70%);pointer-events:none;z-index:-1;filter:blur(6px)}
+.hero-stats{display:flex;gap:40px;margin-top:40px;flex-wrap:wrap}
+.hero-stats .hs{display:flex;flex-direction:column;gap:4px}
+.hero-stats .hs b{font-family:var(--serif);font-weight:400;font-size:30px;color:var(--cream);line-height:1}
+.hero-stats .hs span{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+.hero-stats .hs b em{font-style:normal;color:var(--accent)}
+
+/* ---------- services upgrade ---------- */
+.svc-grid.cols2{grid-template-columns:repeat(2,1fr)}
+@media(max-width:920px){.svc-grid.cols2{grid-template-columns:1fr}}
+.svc{position:relative}
+.svc::before{content:"";position:absolute;left:0;top:0;height:2px;width:0;background:linear-gradient(90deg,var(--accent),transparent);border-radius:14px 14px 0 0;transition:width .3s}
+.svc:hover::before{width:100%}
+.badge{display:inline-block;margin-left:10px;vertical-align:middle;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--max);border:1px solid var(--max-line);border-radius:999px;padding:3px 9px;background:var(--max-soft)}
+.svc.svc-max::before{background:linear-gradient(90deg,var(--max),transparent)}
+.svc.svc-max .for{color:var(--max)}
+
+/* ---------- MAX feature section ---------- */
+.max-sec{border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:radial-gradient(ellipse 70% 80% at 18% 0%,rgba(74,134,255,.07),transparent 60%)}
+.max-grid{display:grid;grid-template-columns:1.05fr 1fr;gap:60px;align-items:center}
+@media(max-width:920px){.max-grid{grid-template-columns:1fr;gap:40px}}
+.max-kicker{color:var(--max);margin-bottom:22px}
+.max-sec h2{font-family:var(--serif);font-weight:300;font-size:clamp(30px,4.2vw,50px);line-height:1.08;letter-spacing:-.01em}
+.max-sec h2 em{font-style:italic;color:var(--max)}
+.max-sec .lead{color:var(--muted);font-size:16px;line-height:1.7;margin-top:22px;max-width:520px}
+.max-sec .lead b{color:var(--cream);font-weight:500}
+.max-feat{list-style:none;margin:30px 0 0;display:grid;gap:14px}
+.max-feat li{display:flex;gap:13px;align-items:flex-start;color:var(--cream);font-size:14.5px;line-height:1.5}
+.max-feat li::before{content:"";flex:none;width:7px;height:7px;margin-top:7px;border-radius:2px;background:var(--max);box-shadow:0 0 10px rgba(74,134,255,.6)}
+.max-feat li span{color:var(--muted)}
+.max-cta{margin-top:34px;display:flex;gap:14px;flex-wrap:wrap}
+.btn.max{background:var(--max-soft);border-color:var(--max-line);color:var(--cream)}
+.btn.max:hover{border-color:var(--max)}
+.btn.max .glow{background:radial-gradient(circle,rgba(74,134,255,.55) 0%,rgba(74,134,255,0) 65%)}
+.maxwin .term-bar i:first-child{background:var(--max)}
+.maxwin .chat-body{height:400px}
+.maxwin .msg.bot{background:#161a22;border-color:var(--max-line)}
+.maxwin .msg.bot .who{color:var(--max)}
+.maxwin .msg.user{background:var(--max-soft);border-color:var(--max-line)}
+.maxwin .mxlogo{display:inline-flex;align-items:center;justify-content:center;width:18px;height:18px;border-radius:5px;background:linear-gradient(135deg,var(--max),#8ab0ff);color:#0b1220;font-family:var(--mono);font-weight:500;font-size:10px;margin-right:8px}
+
+/* ---------- footer links ---------- */
+.foot-links{display:flex;gap:22px;flex-wrap:wrap}
+.foot-links a{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:var(--dim);text-transform:uppercase;transition:color .2s}
+.foot-links a:hover{color:var(--cream)}
 </style>
 </head>
 <body>
+<div class="sbar" id="sbar" aria-hidden="true"></div>
 
 <nav>
   <div class="nav-in">
     <a class="logo" href="#top">GOLDMAN<b>.</b>WORK</a>
     <div class="nav-links">
       <a href="#services">УСЛУГИ</a>
+      <a href="#max">БОТЫ В MAX</a>
       <a href="#how">КАК РАБОТАЕМ</a>
       <a href="#demo">ДЕМО</a>
       <a href="#examples">ПРИМЕРЫ</a>
@@ -197,10 +250,16 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
   <div class="wrap">
     <div class="hero-kicker up"><span class="dot"></span>ИИ-АВТОМАТИЗАЦИЯ ДЛЯ МАЛОГО И СРЕДНЕГО БИЗНЕСА</div>
     <h1>Рутину — машине.<br>Деньги — <em>людям.</em></h1>
-    <p>Внедряем ИИ туда, где бизнес теряет время и заявки: <b>обработка входящих писем для производств и опта</b>, ИИ-администраторы для клиник и салонов, автоматизация CRM. <b>Пилот — 2 недели.</b> Не экономим ваше время — возвращаем деньги.</p>
+    <p>Внедряем ИИ туда, где бизнес теряет время и заявки: <b>обработка входящих писем для производств и опта</b>, ИИ-администраторы для клиник и салонов, <b>боты в мессенджере MAX под ключ</b>, автоматизация CRM. <b>Пилот — 2 недели.</b> Не экономим ваше время — возвращаем деньги.</p>
     <div class="hero-cta">
       <a class="btn fill" href="#contact"><span class="lbl">Бесплатное демо на ваших письмах <span class="arr">→</span></span></a>
       <a class="btn" href="tel:+79012826132"><span class="lbl">+7 (901) 282-61-32</span></a>
+    </div>
+    <div class="hero-stats">
+      <div class="hs"><b>&lt;5 <em>сек</em></b><span>ответ клиенту</span></div>
+      <div class="hs"><b>24/7</b><span>без выходных</span></div>
+      <div class="hs"><b>2 <em>нед</em></b><span>пилот с гарантией</span></div>
+      <div class="hs"><b>MAX<em>·</em>TG<em>·</em>WA</b><span>все каналы</span></div>
     </div>
     <div class="hero-ticker"><a href="#how"><span class="dot"></span>ИИ ДЛЯ РЕАЛЬНОГО БИЗНЕСА, А НЕ ДЛЯ ПРЕЗЕНТАЦИЙ</a></div>
   </div>
@@ -257,21 +316,27 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
       <span class="num">/02</span>
       <h2>Что внедряем</h2>
     </div>
-    <div class="svc-grid reveal">
+    <div class="svc-grid cols2 reveal">
+      <div class="svc svc-max">
+        <span class="sn">СЕРВИС 01<span class="badge">новое</span></span>
+        <h3>Боты в MAX под ключ</h3>
+        <p>Разрабатываю ботов в мессенджере MAX от ТЗ до запуска: меню с кнопками, приём и оформление заявок прямо в чате, оплата, интеграция с CRM и таблицами, рассылки и уведомления. Вы получаете готовый работающий бот.</p>
+        <span class="for">→ МАГАЗИНЫ · УСЛУГИ · ДОСТАВКА · B2B</span>
+      </div>
       <div class="svc">
-        <span class="sn">СЕРВИС 01</span>
+        <span class="sn">СЕРВИС 02</span>
         <h3>ИИ-обработчик заявок</h3>
         <p>Письма дилеров и клиентов превращаются в готовую таблицу: модели, артикулы, количества, сроки. Недостающие данные подсвечиваются — менеджер проверяет, а не разбирает руками.</p>
         <span class="for">→ ПРОИЗВОДСТВА · ОПТ · ДИЛЕРСКИЕ СЕТИ</span>
       </div>
       <div class="svc">
-        <span class="sn">СЕРВИС 02</span>
+        <span class="sn">СЕРВИС 03</span>
         <h3>ИИ-администратор 24/7</h3>
-        <p>Telegram, WhatsApp и виджет на сайте: отвечает за 5 секунд, снимает типовые вопросы, записывает клиентов и напоминает о визите. Ночью и в выходные — тоже.</p>
+        <p>MAX, Telegram, WhatsApp и виджет на сайте: отвечает за 5 секунд, снимает типовые вопросы, записывает клиентов и напоминает о визите. Ночью и в выходные — тоже.</p>
         <span class="for">→ КЛИНИКИ · САЛОНЫ · СЕРВИСЫ</span>
       </div>
       <div class="svc">
-        <span class="sn">СЕРВИС 03</span>
+        <span class="sn">СЕРВИС 04</span>
         <h3>Автоматизация продаж</h3>
         <p>amoCRM и Bitrix24 под ваш процесс: автоворонки, задачи, напоминания, follow-up без забываний. Ни одна заявка больше не зависает между менеджерами.</p>
         <span class="for">→ ОТДЕЛЫ ПРОДАЖ · B2B</span>
@@ -280,10 +345,43 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
   </div>
 </section>
 
-<section id="demo" style="padding-top:0">
+<section id="max" class="max-sec">
   <div class="wrap">
     <div class="sec-head reveal">
       <span class="num">/03</span>
+      <h2>Боты в MAX</h2>
+      <span class="note up">новый мессенджер — ваши клиенты уже там</span>
+    </div>
+    <div class="max-grid reveal">
+      <div>
+        <div class="max-kicker up"><span class="dot" style="background:var(--max)"></span>РАЗРАБОТКА ПОД КЛЮЧ</div>
+        <h2>Бот в MAX, который <em>продаёт и принимает заявки</em> за вас.</h2>
+        <p class="lead">Собираю бота в мессенджере <b>MAX</b> целиком: от сценария и кнопок до интеграции с вашей системой. Вы ставите задачу — получаете <b>готовый работающий бот</b> и инструкцию, как им пользоваться.</p>
+        <ul class="max-feat">
+          <li>Сценарии и меню с кнопками <span>— клиент идёт по шагам, не теряется</span></li>
+          <li>Приём и оформление заявок прямо в чате <span>— с корзиной и оплатой</span></li>
+          <li>Интеграция с CRM, таблицами и оплатой <span>— заявка сразу у вас</span></li>
+          <li>Рассылки и уведомления <span>— напоминания, акции, статусы заказа</span></li>
+          <li>Запуск под ключ <span>— от ТЗ до рабочего бота, с поддержкой</span></li>
+        </ul>
+        <div class="max-cta">
+          <a class="btn max" href="#contact"><span class="lbl">Хочу бота в MAX <span class="arr">→</span></span></a>
+          <a class="btn" href="#pricing"><span class="lbl">Сколько стоит</span></a>
+        </div>
+      </div>
+      <div class="term maxwin">
+        <div class="term-bar"><i></i><i></i><i></i><span>MAX · бот компании</span></div>
+        <div class="chat-body" id="maxBody"></div>
+        <div class="term-note"><b style="color:var(--max)">●</b> пример сценария бота под задачу клиента — у вас будет свой</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="demo" style="padding-top:0">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <span class="num">/04</span>
       <h2>Живое демо</h2>
       <span class="note up">вставь письмо — увидишь таблицу · всё считается в твоём браузере</span>
     </div>
@@ -307,7 +405,7 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
 <section id="botdemo" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">/04</span>
+      <span class="num">/05</span>
       <h2>Демо ИИ-администратора</h2>
       <span class="note up">напишите, как написал бы ваш клиент</span>
     </div>
@@ -333,7 +431,7 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
 <section id="examples" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">/05</span>
+      <span class="num">/06</span>
       <h2>Примеры работы</h2>
       <span class="note up">живые отчёты — открой и потрогай</span>
     </div>
@@ -363,7 +461,7 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
 <section id="pricing" style="padding-top:0">
   <div class="wrap">
     <div class="sec-head reveal">
-      <span class="num">/06</span>
+      <span class="num">/07</span>
       <h2>Цены</h2>
       <span class="note up">фиксируем до старта — без «дополнительно по договорённости»</span>
     </div>
@@ -385,6 +483,12 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
         <span class="pd">Подключение к CRM и каналам, настройка под ваши артикулы и процесс</span>
         <span class="pp">от 30 000 ₽<small>разово</small></span>
         <span class="pg">amoCRM · Bitrix24 · почта · мессенджеры</span>
+      </div>
+      <div class="prow">
+        <span class="pn">Бот в MAX</span>
+        <span class="pd">Бот в мессенджере MAX под ключ: сценарии, кнопки, приём заявок, интеграции</span>
+        <span class="pp">от 30 000 ₽<small>под ключ</small></span>
+        <span class="pg">сроки и смета — <b>фиксируем до старта</b></span>
       </div>
       <div class="prow">
         <span class="pn">Поддержка</span>
@@ -424,8 +528,14 @@ footer span{font-family:var(--mono);font-size:11px;letter-spacing:.12em;color:va
 </section>
 
 <footer>
-  <div class="wrap" style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:14px;width:100%">
+  <div class="wrap" style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:16px;width:100%">
     <span>© 2026 GOLDMAN.WORK</span>
+    <div class="foot-links">
+      <a href="#services">Услуги</a>
+      <a href="#max">Боты в MAX</a>
+      <a href="#pricing">Цены</a>
+      <a href="#contact">Контакты</a>
+    </div>
     <span>ИИ-автоматизация · пилоты с гарантией</span>
   </div>
 </footer>
@@ -749,6 +859,80 @@ document.querySelectorAll(".btn").forEach(function(b){
     g.style.top = (e.clientY - r.top) + "px";
   });
 });
+
+// прогресс прокрутки
+(function(){
+  var bar = document.getElementById("sbar");
+  if (!bar) return;
+  function upd(){
+    var h = document.documentElement;
+    var max = h.scrollHeight - h.clientHeight;
+    var p = max > 0 ? h.scrollTop / max : 0;
+    bar.style.width = (p * 100) + "%";
+  }
+  window.addEventListener("scroll", upd, { passive: true });
+  window.addEventListener("resize", upd);
+  upd();
+})();
+
+// MAX-бот: авто-демо сценария
+(function(){
+  var body = document.getElementById("maxBody");
+  if (!body) return;
+  var SCRIPT = [
+    { who: "bot",  t: "Здравствуйте! Это бот компании в MAX 🤖 Помогу выбрать услугу, рассчитать стоимость и оставить заявку — прямо здесь, в чате." },
+    { who: "user", t: "Сколько стоит бот под ключ?" },
+    { who: "bot",  t: "Бот под ключ — от 30 000 ₽: сценарии, меню с кнопками, приём заявок и интеграция с вашей CRM. Под какую задачу нужен бот?" },
+    { who: "user", t: "У меня доставка еды" },
+    { who: "bot",  t: "Отлично! Соберу меню с кнопками, корзину, оплату, статусы заказа и уведомления курьеру. Оставьте номер — пришлю смету и примеры в MAX сегодня." },
+    { who: "user", t: "+7 905 ..." },
+    { who: "bot",  t: "Принял, заявка создана ✅ Менеджер свяжется в течение 15 минут. А пока могу прислать примеры готовых ботов — отправить?" }
+  ];
+  function addMsg(m){
+    var d = document.createElement("div");
+    d.className = "msg " + m.who;
+    var w = document.createElement("span");
+    w.className = "who";
+    if (m.who === "bot") {
+      var lg = document.createElement("span");
+      lg.className = "mxlogo"; lg.textContent = "M";
+      w.appendChild(lg);
+      w.appendChild(document.createTextNode("БОТ В MAX"));
+    } else {
+      w.textContent = "КЛИЕНТ";
+    }
+    d.appendChild(w);
+    d.appendChild(document.createTextNode(m.t));
+    body.appendChild(d);
+    body.scrollTop = body.scrollHeight;
+  }
+  var started = false;
+  function play(){
+    if (started) return;
+    started = true;
+    var i = 0;
+    (function step(){
+      if (i >= SCRIPT.length) return;
+      var m = SCRIPT[i++];
+      if (m.who === "bot") {
+        var t = document.createElement("div");
+        t.className = "typing"; t.textContent = "бот печатает…";
+        body.appendChild(t); body.scrollTop = body.scrollHeight;
+        setTimeout(function(){ t.remove(); addMsg(m); setTimeout(step, 950); }, 850);
+      } else {
+        addMsg(m); setTimeout(step, 700);
+      }
+    })();
+  }
+  if ("IntersectionObserver" in window && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    var io = new IntersectionObserver(function(es){
+      es.forEach(function(e){ if (e.isIntersecting) { play(); io.disconnect(); } });
+    }, { threshold: 0.3 });
+    io.observe(body);
+  } else {
+    SCRIPT.forEach(addMsg);
+  }
+})();
 </script>
 </body>
 </html>
